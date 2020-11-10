@@ -17,8 +17,8 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements UserDao{
 	
 	@Override
 	public void addUser(User user) {
-		String sql ="insert into user values(?,?,?)";
-		Object[] params = {1,"apple","cq"};
+		String sql ="insert into user values(default,?,?,?,?)";
+		Object[] params = {user.getUser_name(),user.getOpenid(),user.getHeadimgurl(),null};
 		dml(sql,params);
 	}
 

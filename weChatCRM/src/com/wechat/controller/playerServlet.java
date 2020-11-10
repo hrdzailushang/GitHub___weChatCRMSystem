@@ -3,7 +3,6 @@ package com.wechat.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.wechat.model.configuration.TexTemplate;
+import com.wechat.model.configuration.TokenConfig;
 import com.wechat.model.dao.WxDao;
 import com.wechat.utils.SHA1Utils;
 
-import cn.hutool.http.HttpUtil;
 
 public class playerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -69,6 +67,8 @@ public class playerServlet extends HttpServlet {
 			String responseStr  = WxDao.getResponseStr(xmlMap);
 			//回送给微信服务器
 			response.getWriter().print(responseStr);
+			TokenConfig.ui=null;
+			
 		}
         
         

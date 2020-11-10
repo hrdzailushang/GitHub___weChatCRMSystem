@@ -88,7 +88,7 @@ public class TexTemplate {
 				"    \"msgtype\":\"text\",\r\n" + 
 				"    \"text\":\r\n" + 
 				"    {\r\n" + 
-				"         \"content\":\"欢迎"+TokenConfig.getUserInfoName(xmlMap)+getContent(1)+"\"\r\n" + 
+				"         \"content\":\"欢迎"+TokenConfig.getUserInfoUrl(xmlMap).getNickName()+getContent(1)+"\"\r\n" + 
 				"    }\r\n" + 
 				"}\r\n" + 
 				"";
@@ -106,7 +106,7 @@ public class TexTemplate {
 				"    \"msgtype\":\"text\",\r\n" + 
 				"    \"text\":\r\n" + 
 				"    {\r\n" + 
-				"         \"content\":\""+TokenConfig.getUserInfoName(xmlMap)+"扫描了你的二维码"+"\"\r\n" + 
+				"         \"content\":\""+TokenConfig.getUserInfoUrl(xmlMap).getNickName()+"扫描了你的二维码"+"\"\r\n" + 
 				"    }\r\n" + 
 				"}\r\n" + 
 				"";

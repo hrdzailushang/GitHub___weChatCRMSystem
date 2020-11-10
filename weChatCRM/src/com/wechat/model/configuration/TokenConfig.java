@@ -4,6 +4,9 @@ import java.util.Map;
 
 import com.wechat.model.bean.AccessToken;
 import com.wechat.model.bean.UserInfo;
+import com.wechat.model.dao.crm.UserDao;
+import com.wechat.model.dao.crm.impl.UserDaoImpl;
+import com.wechat.model.pojo.User;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpUtil;
@@ -13,8 +16,8 @@ import cn.hutool.json.JSONUtil;
 public class TokenConfig {
 	
 	private static String accessTokenUrl="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-	private static String APPID = "wx3d44d645d21e9618";
-	private static String APPSECRET="ede53bbb65e4870b45ae73ac45e8d756";
+	private static String APPID = "wx0f53c5158940518e";
+	private static String APPSECRET="dc415f54572a401b9f31c8e26b08a99b";
 	
 	//客服的URL
 	private  String customerUrl = " https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
@@ -29,9 +32,12 @@ public class TokenConfig {
 	private  String getQrcodeCreateUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET";
 	
 	private static AccessToken at = null;
+	public static UserInfo ui=null;
+	
 	
 	//access_token是公众号的全局唯一接口调用凭据，公众号调用各接口时都需使用access_token,初始化access_token
 	private static AccessToken initToken() {
+		
 		//替换accessTokenUrl -- APPID -APPSECRET
 		String url = accessTokenUrl.replace("APPID", APPID).replace("APPSECRET", APPSECRET);
 		
@@ -68,33 +74,40 @@ public class TokenConfig {
 		ss = tc.customerUrl.replace("ACCESS_TOKEN",TokenConfig.getAccessToken());
 		return ss;
 	}
-	
-	//暴露一个获取用户基本信息的方法
+	//得到用户基本信息
 	public static UserInfo getUserInfoUrl(Map<String, String> xmlMap) {
+		if(ui==null) {
+			return ui=initUserInfoUrl(xmlMap);
+		}else
+		return ui;
+	}
+	//初始化一个获取用户基本信息的方法
+	public static UserInfo initUserInfoUrl(Map<String, String> xmlMap) {
 		TokenConfig tc = new TokenConfig();
 		String ss = null;
+		String opendid=xmlMap.get("FromUserName");
 		//替换每个访问用户的openID
 		ss = tc.getUerInfoUrl.replace("ACCESS_TOKEN",TokenConfig.getAccessToken()).replace("OPENID",xmlMap.get("FromUserName"));
-		
 		//从微信服务器获取对应的权限  接口调用请求---get请求
 		String uerInfoStr = HttpUtil.get(ss);
-		
 		//解析服务器中发送过来的json请求
 		JSONObject jsonObject = JSONUtil.parseObj(uerInfoStr);
 		//取出其中用户的昵称和头像
 		String nickName = jsonObject.getStr("nickname");
+		System.out.println("mingzi"+nickName);
 		String headImgUrl = jsonObject.getStr("headimgurl");
 		//将取出的值放到UserInfo中
-		UserInfo ui = new UserInfo(nickName,headImgUrl);
-		System.out.println("当前的用户是："+ui.getNickName());
-		return ui;
+		UserInfo uif = new UserInfo(nickName,headImgUrl);
+		System.out.println("当前的用户是："+uif.getNickName());
+		//封装user
+	    User user=new User(nickName, opendid, headImgUrl);
+	    //将user存入数据库
+	    UserDao ud=new UserDaoImpl();
+	    ud.addUser(user);
+		return uif;
 	}
 	
-	//返回一个访问用户的昵称
-	public static String getUserInfoName(Map<String, String> xmlMap) {
-		String name = TokenConfig.getUserInfoUrl(xmlMap).getNickName();
-		return name;
-	}
+
 	
 	//生成临时二维码并获取这个二维码的url
 	public static String getQrcode(Map<String, String> xmlMap) {
