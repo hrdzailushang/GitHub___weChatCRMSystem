@@ -32,7 +32,7 @@ public class TokenConfig {
 	private  String getQrcodeCreateUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET";
 	
 	private static AccessToken at = null;
-	public static UserInfo ui=null;
+	public static UserInfo ui = null;
 	
 	
 	//access_token是公众号的全局唯一接口调用凭据，公众号调用各接口时都需使用access_token,初始化access_token
